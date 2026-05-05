@@ -12,24 +12,33 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Estacao {
+public class Cabina {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String nome;
-    private Integer ordem;
-    private String descricao;
+    private String numeroSerie;
+    private String modelo;
+    private String status;
 
     @ManyToOne
     private LinhaProducao linhaProducao;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "estacao")
+    @OneToMany(mappedBy = "cabina")
     private List<Falha> falhas;
 
-    public void cadastrar() {
-        // Implementar lógica de cadastro
+    public void iniciarProducao() {
+        // Implementar lógica de início de produção
+    }
+
+    public void finalizar() {
+        // Implementar lógica de finalização
+    }
+
+    public List<Falha> consultarFalhas() {
+        // Implementar lógica de consulta de falhas
+        return this.falhas;
     }
 }
