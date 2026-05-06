@@ -1,10 +1,9 @@
 package model.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Entity
 @Data
@@ -22,10 +21,10 @@ public class Relatorio {
     private LinhaProducao linhaProducao;
 
     public void gerar() {
-        // Implementar lógica de geração
+
     }
 
     public void exportar() {
-        // Implementar lógica de exportação
+
     }
 }
