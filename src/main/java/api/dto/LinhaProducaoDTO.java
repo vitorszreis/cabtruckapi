@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import model.entity.Relatorio;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
@@ -28,5 +29,21 @@ public class LinhaProducaoDTO {
         ModelMapper modelMapper = new ModelMapper();
         LinhaProducaoDTO dto = modelMapper.map(lp, LinhaProducaoDTO.class);
         return dto;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RelatorioDTO {
+        private Integer id;
+        private String tipo;
+
+        private Integer linhaProducaoId;
+
+        public static RelatorioDTO create(Relatorio r) {
+            ModelMapper modelMapper = new ModelMapper();
+            RelatorioDTO dto = modelMapper.map(r, RelatorioDTO.class);
+            return dto;
+        }
     }
 }

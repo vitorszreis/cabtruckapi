@@ -1,4 +1,4 @@
-package com.example.cabtruckapi.api.dto;
+package api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
