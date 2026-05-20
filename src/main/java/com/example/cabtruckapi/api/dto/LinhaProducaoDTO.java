@@ -1,15 +1,15 @@
-package api.dto;
+package com.example.cabtruckapi.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import model.entity.Relatorio;
+import com.example.cabtruckapi.model.entity.Relatorio;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
-import model.entity.LinhaProducao;
+import com.example.cabtruckapi.model.entity.LinhaProducao;
 
 @Data
 @NoArgsConstructor
