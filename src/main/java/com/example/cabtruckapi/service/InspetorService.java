@@ -2,42 +2,41 @@ package com.example.cabtruckapi.service;
 
 import com.example.cabtruckapi.api.exception.RegraNegocioException;
 import com.example.cabtruckapi.model.entity.Inspetor;
+import com.example.cabtruckapi.model.repository.InspetorRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class InspetorService {
 
-    private final ConcurrentHashMap<Integer, Inspetor> bancoMemoria = new ConcurrentHashMap<>();
-    private final AtomicInteger sequence = new AtomicInteger(1);
+    private InspetorRepository repository;
+
+    public InspetorService(InspetorRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Inspetor> getInspetores() {
-        return new ArrayList<>(bancoMemoria.values());
+        return repository.findAll();
     }
 
     public Optional<Inspetor> getInspetorById(Integer id) {
-        return Optional.ofNullable(bancoMemoria.get(id));
+        return repository.findById(id);
     }
 
+    @Transactional
     public Inspetor salvar(Inspetor inspetor) {
         validar(inspetor);
-        if (inspetor.getId() == null) {
-            inspetor.setId(sequence.getAndIncrement());
-        }
-        bancoMemoria.put(inspetor.getId(), inspetor);
-        return inspetor;
+        return repository.save(inspetor);
     }
 
+    @Transactional
     public void excluir(Inspetor inspetor) {
-        if (inspetor.getId() == null) {
-            throw new RegraNegocioException("Inspetor sem id");
-        }
-        bancoMemoria.remove(inspetor.getId());
+        Objects.requireNonNull(inspetor.getId());
+        repository.delete(inspetor);
     }
 
     public void validar(Inspetor inspetor) {

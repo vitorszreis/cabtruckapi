@@ -2,42 +2,41 @@ package com.example.cabtruckapi.service;
 
 import com.example.cabtruckapi.api.exception.RegraNegocioException;
 import com.example.cabtruckapi.model.entity.Falha;
+import com.example.cabtruckapi.model.repository.FalhaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class FalhaService {
 
-    private final ConcurrentHashMap<Integer, Falha> bancoMemoria = new ConcurrentHashMap<>();
-    private final AtomicInteger sequence = new AtomicInteger(1);
+    private FalhaRepository repository;
+
+    public FalhaService(FalhaRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Falha> getFalhas() {
-        return new ArrayList<>(bancoMemoria.values());
+        return repository.findAll();
     }
 
     public Optional<Falha> getFalhaById(Integer id) {
-        return Optional.ofNullable(bancoMemoria.get(id));
+        return repository.findById(id);
     }
 
+    @Transactional
     public Falha salvar(Falha falha) {
         validar(falha);
-        if (falha.getId() == null) {
-            falha.setId(sequence.getAndIncrement());
-        }
-        bancoMemoria.put(falha.getId(), falha);
-        return falha;
+        return repository.save(falha);
     }
 
+    @Transactional
     public void excluir(Falha falha) {
-        if (falha.getId() == null) {
-            throw new RegraNegocioException("Falha sem id");
-        }
-        bancoMemoria.remove(falha.getId());
+        Objects.requireNonNull(falha.getId());
+        repository.delete(falha);
     }
 
     public void validar(Falha falha) {

@@ -2,42 +2,41 @@ package com.example.cabtruckapi.service;
 
 import com.example.cabtruckapi.api.exception.RegraNegocioException;
 import com.example.cabtruckapi.model.entity.LinhaProducao;
+import com.example.cabtruckapi.model.repository.LinhaProducaoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class LinhaProducaoService {
 
-    private final ConcurrentHashMap<Integer, LinhaProducao> bancoMemoria = new ConcurrentHashMap<>();
-    private final AtomicInteger sequence = new AtomicInteger(1);
+    private LinhaProducaoRepository repository;
+
+    public LinhaProducaoService(LinhaProducaoRepository repository) {
+        this.repository = repository;
+    }
 
     public List<LinhaProducao> getLinhas() {
-        return new ArrayList<>(bancoMemoria.values());
+        return repository.findAll();
     }
 
     public Optional<LinhaProducao> getLinhaById(Integer id) {
-        return Optional.ofNullable(bancoMemoria.get(id));
+        return repository.findById(id);
     }
 
+    @Transactional
     public LinhaProducao salvar(LinhaProducao linhaProducao) {
         validar(linhaProducao);
-        if (linhaProducao.getId() == null) {
-            linhaProducao.setId(sequence.getAndIncrement());
-        }
-        bancoMemoria.put(linhaProducao.getId(), linhaProducao);
-        return linhaProducao;
+        return repository.save(linhaProducao);
     }
 
+    @Transactional
     public void excluir(LinhaProducao linhaProducao) {
-        if (linhaProducao.getId() == null) {
-            throw new RegraNegocioException("Linha de producao sem id");
-        }
-        bancoMemoria.remove(linhaProducao.getId());
+        Objects.requireNonNull(linhaProducao.getId());
+        repository.delete(linhaProducao);
     }
 
     public void validar(LinhaProducao linhaProducao) {

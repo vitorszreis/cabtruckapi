@@ -2,42 +2,41 @@ package com.example.cabtruckapi.service;
 
 import com.example.cabtruckapi.api.exception.RegraNegocioException;
 import com.example.cabtruckapi.model.entity.Estacao;
+import com.example.cabtruckapi.model.repository.EstacaoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class EstacaoService {
 
-    private final ConcurrentHashMap<Integer, Estacao> bancoMemoria = new ConcurrentHashMap<>();
-    private final AtomicInteger sequence = new AtomicInteger(1);
+    private EstacaoRepository repository;
+
+    public EstacaoService(EstacaoRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Estacao> getEstacoes() {
-        return new ArrayList<>(bancoMemoria.values());
+        return repository.findAll();
     }
 
     public Optional<Estacao> getEstacaoById(Integer id) {
-        return Optional.ofNullable(bancoMemoria.get(id));
+        return repository.findById(id);
     }
 
+    @Transactional
     public Estacao salvar(Estacao estacao) {
         validar(estacao);
-        if (estacao.getId() == null) {
-            estacao.setId(sequence.getAndIncrement());
-        }
-        bancoMemoria.put(estacao.getId(), estacao);
-        return estacao;
+        return repository.save(estacao);
     }
 
+    @Transactional
     public void excluir(Estacao estacao) {
-        if (estacao.getId() == null) {
-            throw new RegraNegocioException("Estacao sem id");
-        }
-        bancoMemoria.remove(estacao.getId());
+        Objects.requireNonNull(estacao.getId());
+        repository.delete(estacao);
     }
 
     public void validar(Estacao estacao) {

@@ -2,42 +2,41 @@ package com.example.cabtruckapi.service;
 
 import com.example.cabtruckapi.api.exception.RegraNegocioException;
 import com.example.cabtruckapi.model.entity.AcaoCorretiva;
+import com.example.cabtruckapi.model.repository.AcaoCorretivaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class AcaoCorretivaService {
 
-    private final ConcurrentHashMap<Integer, AcaoCorretiva> bancoMemoria = new ConcurrentHashMap<>();
-    private final AtomicInteger sequence = new AtomicInteger(1);
+    private AcaoCorretivaRepository repository;
+
+    public AcaoCorretivaService(AcaoCorretivaRepository repository) {
+        this.repository = repository;
+    }
 
     public List<AcaoCorretiva> getAcoesCorretivas() {
-        return new ArrayList<>(bancoMemoria.values());
+        return repository.findAll();
     }
 
     public Optional<AcaoCorretiva> getAcaoCorretivaById(Integer id) {
-        return Optional.ofNullable(bancoMemoria.get(id));
+        return repository.findById(id);
     }
 
+    @Transactional
     public AcaoCorretiva salvar(AcaoCorretiva acaoCorretiva) {
         validar(acaoCorretiva);
-        if (acaoCorretiva.getId() == null) {
-            acaoCorretiva.setId(sequence.getAndIncrement());
-        }
-        bancoMemoria.put(acaoCorretiva.getId(), acaoCorretiva);
-        return acaoCorretiva;
+        return repository.save(acaoCorretiva);
     }
 
+    @Transactional
     public void excluir(AcaoCorretiva acaoCorretiva) {
-        if (acaoCorretiva.getId() == null) {
-            throw new RegraNegocioException("Acao corretiva sem id");
-        }
-        bancoMemoria.remove(acaoCorretiva.getId());
+        Objects.requireNonNull(acaoCorretiva.getId());
+        repository.delete(acaoCorretiva);
     }
 
     public void validar(AcaoCorretiva acaoCorretiva) {
