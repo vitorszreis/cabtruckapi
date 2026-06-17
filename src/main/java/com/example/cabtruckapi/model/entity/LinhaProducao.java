@@ -34,11 +34,23 @@ public class LinhaProducao {
     private List<Relatorio> relatorios;
 
     public void cadastrar() {
-        // Implementar lógica de cadastro
+        if (this.nome == null || this.nome.trim().isEmpty()) {
+            throw new IllegalStateException("Nome da linha de producao e obrigatorio");
+        }
+        if (this.turno == null || this.turno.trim().isEmpty()) {
+            throw new IllegalStateException("Turno da linha de producao e obrigatorio");
+        }
+        this.ativa = true;
     }
 
     public double calcularDPU() {
-        // Implementar lógica de cálculo de DPU
-        return 0.0;
+        if (this.cabinas == null || this.cabinas.isEmpty()) {
+            return 0.0;
+        }
+        long totalFalhas = this.cabinas.stream()
+                .filter(c -> c.getFalhas() != null)
+                .mapToLong(c -> c.getFalhas().size())
+                .sum();
+        return (double) totalFalhas / this.cabinas.size();
     }
 }

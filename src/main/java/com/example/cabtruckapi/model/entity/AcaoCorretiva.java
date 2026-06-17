@@ -22,6 +22,14 @@ public class AcaoCorretiva {
     private Falha falha;
 
     public void registrar() {
-        // Implementar lógica de registro
+        if (this.descricao == null || this.descricao.trim().isEmpty()) {
+            throw new IllegalStateException("Descricao da acao corretiva e obrigatoria");
+        }
+        if (this.eficacia == null || this.eficacia.trim().isEmpty()) {
+            throw new IllegalStateException("Eficacia da acao corretiva e obrigatoria");
+        }
+        if (this.falha == null) {
+            throw new IllegalStateException("Acao corretiva deve estar vinculada a uma falha");
+        }
     }
 }

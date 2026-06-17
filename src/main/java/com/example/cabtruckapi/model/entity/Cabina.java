@@ -30,15 +30,20 @@ public class Cabina {
     private List<Falha> falhas;
 
     public void iniciarProducao() {
-        // Implementar lógica de início de produção
+        if (!"DISPONIVEL".equalsIgnoreCase(this.status)) {
+            throw new IllegalStateException("Cabina precisa estar DISPONIVEL para iniciar producao");
+        }
+        this.status = "EM_PRODUCAO";
     }
 
     public void finalizar() {
-        // Implementar lógica de finalização
+        if (!"EM_PRODUCAO".equalsIgnoreCase(this.status)) {
+            throw new IllegalStateException("Cabina precisa estar EM_PRODUCAO para ser finalizada");
+        }
+        this.status = "FINALIZADA";
     }
 
     public List<Falha> consultarFalhas() {
-        // Implementar lógica de consulta de falhas
         return this.falhas;
     }
 }

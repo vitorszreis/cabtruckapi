@@ -28,6 +28,15 @@ public class Inspetor {
     private List<Falha> falhas;
 
     public void cadastrar() {
-        // Implementar lógica de cadastro
+        if (this.nome == null || this.nome.trim().isEmpty()) {
+            throw new IllegalStateException("Nome do inspetor e obrigatorio");
+        }
+        if (this.matricula == null || this.matricula.trim().isEmpty()) {
+            throw new IllegalStateException("Matricula do inspetor e obrigatoria");
+        }
+        if (this.turno == null || this.turno.trim().isEmpty()) {
+            throw new IllegalStateException("Turno do inspetor e obrigatorio");
+        }
+        this.ativo = true;
     }
 }

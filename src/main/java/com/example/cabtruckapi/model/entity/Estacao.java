@@ -30,6 +30,14 @@ public class Estacao {
     private List<Falha> falhas;
 
     public void cadastrar() {
-        // Implementar lógica de cadastro
+        if (this.nome == null || this.nome.trim().isEmpty()) {
+            throw new IllegalStateException("Nome da estacao e obrigatorio");
+        }
+        if (this.ordem == null || this.ordem < 1) {
+            throw new IllegalStateException("Ordem da estacao deve ser maior que zero");
+        }
+        if (this.linhaProducao == null) {
+            throw new IllegalStateException("Estacao deve estar vinculada a uma linha de producao");
+        }
     }
 }

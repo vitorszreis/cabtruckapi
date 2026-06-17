@@ -39,10 +39,19 @@ public class Falha {
     private List<AcaoCorretiva> acoesCorrativas;
 
     public void registrar() {
-        // Implementar lógica de registro
+        if (this.descricao == null || this.descricao.trim().isEmpty()) {
+            throw new IllegalStateException("Descricao da falha e obrigatoria");
+        }
+        if (this.severidade == null || this.severidade.trim().isEmpty()) {
+            throw new IllegalStateException("Severidade da falha e obrigatoria");
+        }
+        this.status = "ABERTA";
     }
 
     public void resolver() {
-        // Implementar lógica de resolução
+        if (!"ABERTA".equalsIgnoreCase(this.status)) {
+            throw new IllegalStateException("Apenas falhas com status ABERTA podem ser resolvidas");
+        }
+        this.status = "RESOLVIDA";
     }
 }
