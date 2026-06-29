@@ -6,6 +6,8 @@ import com.example.cabtruckapi.model.entity.AcaoCorretiva;
 import com.example.cabtruckapi.model.entity.Falha;
 import com.example.cabtruckapi.service.AcaoCorretivaService;
 import com.example.cabtruckapi.service.FalhaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -28,16 +30,19 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/acoes-corretivas")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "Ações Corretivas", description = "Gerenciamento de ações corretivas associadas a falhas")
 public class AcaoCorretivaController {
 
     private final AcaoCorretivaService service;
     private final FalhaService falhaService;
 
+    @Operation(summary = "Listar todas as ações corretivas")
     @GetMapping
     public ResponseEntity<List<AcaoCorretivaDTO>> get() {
         return ResponseEntity.ok(service.getAcoesCorretivas().stream().map(this::toDTO).collect(Collectors.toList()));
     }
 
+    @Operation(summary = "Buscar ação corretiva por ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable("id") Integer id) {
         Optional<AcaoCorretiva> acao = service.getAcaoCorretivaById(id);
@@ -47,6 +52,7 @@ public class AcaoCorretivaController {
         return ResponseEntity.ok(toDTO(acao.get()));
     }
 
+    @Operation(summary = "Criar nova ação corretiva")
     @PostMapping
     public ResponseEntity<?> post(@RequestBody AcaoCorretivaDTO dto) {
         try {
@@ -56,6 +62,7 @@ public class AcaoCorretivaController {
         }
     }
 
+    @Operation(summary = "Atualizar ação corretiva")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable("id") Integer id, @RequestBody AcaoCorretivaDTO dto) {
         if (service.getAcaoCorretivaById(id).isEmpty()) {
@@ -70,6 +77,7 @@ public class AcaoCorretivaController {
         }
     }
 
+    @Operation(summary = "Excluir ação corretiva")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluir(@PathVariable("id") Integer id) {
         Optional<AcaoCorretiva> acao = service.getAcaoCorretivaById(id);
