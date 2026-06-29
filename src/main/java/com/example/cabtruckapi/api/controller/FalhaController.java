@@ -12,8 +12,11 @@ import com.example.cabtruckapi.service.EstacaoService;
 import com.example.cabtruckapi.service.FalhaService;
 import com.example.cabtruckapi.service.InspetorService;
 import com.example.cabtruckapi.service.TipoFalhaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,8 +27,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,6 +39,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/falhas")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "Falhas", description = "Registro e acompanhamento de falhas")
 public class FalhaController {
 
     private final FalhaService service;
@@ -42,11 +48,13 @@ public class FalhaController {
     private final TipoFalhaService tipoFalhaService;
     private final InspetorService inspetorService;
 
+    @Operation(summary = "Listar todas as falhas")
     @GetMapping
     public ResponseEntity<List<FalhaDTO>> get() {
         return ResponseEntity.ok(service.getFalhas().stream().map(this::toDTO).collect(Collectors.toList()));
     }
 
+    @Operation(summary = "Buscar falha por ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable("id") Integer id) {
         Optional<Falha> falha = service.getFalhaById(id);
@@ -56,10 +64,42 @@ public class FalhaController {
         return ResponseEntity.ok(toDTO(falha.get()));
     }
 
+    @Operation(summary = "Consultar falhas por cabina (RF09)")
+    @GetMapping("/cabina/{cabinaId}")
+    public ResponseEntity<List<FalhaDTO>> getPorCabina(@PathVariable("cabinaId") Integer cabinaId) {
+        return ResponseEntity.ok(
+                service.getFalhasByCabina(cabinaId).stream().map(this::toDTO).collect(Collectors.toList()));
+    }
+
+    @Operation(summary = "Consultar falhas por estacao em um periodo (RF10)")
+    @GetMapping("/estacao/{estacaoId}")
+    public ResponseEntity<List<FalhaDTO>> getPorEstacao(
+            @PathVariable("estacaoId") Integer estacaoId,
+            @RequestParam("inicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam("fim") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
+        return ResponseEntity.ok(
+                service.getFalhasByEstacao(estacaoId, inicio, fim).stream().map(this::toDTO).collect(Collectors.toList()));
+    }
+
+    @Operation(summary = "Registrar falha em cabina (RF06)")
     @PostMapping
     public ResponseEntity<?> post(@RequestBody FalhaDTO dto) {
         try {
-            return new ResponseEntity<>(toDTO(service.salvar(converter(dto))), HttpStatus.CREATED);
+            return new ResponseEntity<>(toDTO(service.registrar(converter(dto))), HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Resolver falha (RF08)")
+    @PutMapping("/{id}/resolver")
+    public ResponseEntity<?> resolver(@PathVariable("id") Integer id) {
+        Optional<Falha> falha = service.getFalhaById(id);
+        if (falha.isEmpty()) {
+            return new ResponseEntity<>("Falha nao encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            return ResponseEntity.ok(toDTO(service.resolver(falha.get())));
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

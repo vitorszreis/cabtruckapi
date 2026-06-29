@@ -95,6 +95,9 @@ public class AcaoCorretivaController {
                     .orElseThrow(() -> new RegraNegocioException("Falha informada nao existe"));
             acao.setFalha(falha);
         }
+        if (acao.getDataExecucao() == null) {
+            acao.setDataExecucao(java.time.LocalDate.now());
+        }
         return acao;
     }
 

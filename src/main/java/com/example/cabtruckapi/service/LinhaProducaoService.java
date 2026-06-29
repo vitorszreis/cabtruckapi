@@ -39,6 +39,11 @@ public class LinhaProducaoService {
         repository.delete(linhaProducao);
     }
 
+    // RF12 - Calcular indicador DPU (defeitos por unidade) da linha
+    public double calcularDPU(LinhaProducao linhaProducao) {
+        return linhaProducao.calcularDPU();
+    }
+
     public void validar(LinhaProducao linhaProducao) {
         if (linhaProducao.getNome() == null || linhaProducao.getNome().trim().isEmpty()) {
             throw new RegraNegocioException("Nome da linha invalido");

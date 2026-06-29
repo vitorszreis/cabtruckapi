@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import org.modelmapper.ModelMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.example.cabtruckapi.model.entity.Cabina;
@@ -18,6 +19,7 @@ public class CabinaDTO {
     private String numeroSerie;
     private String modelo;
     private String status;
+    private LocalDate dataInicio;
 
     private Integer linhaProducaoId;
     private List<Integer> falhaIds;

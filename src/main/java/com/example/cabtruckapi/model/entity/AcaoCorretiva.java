@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -17,6 +19,7 @@ public class AcaoCorretiva {
 
     private String descricao;
     private String eficacia;
+    private LocalDate dataExecucao;
 
     @ManyToOne
     private Falha falha;

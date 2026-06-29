@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import org.modelmapper.ModelMapper;
 
+import java.time.LocalDate;
+
 import com.example.cabtruckapi.model.entity.AcaoCorretiva;
 
 @Data
@@ -15,6 +17,7 @@ public class AcaoCorretivaDTO {
     private Integer id;
     private String descricao;
     private String eficacia;
+    private LocalDate dataExecucao;
 
     private Integer falhaId;
 

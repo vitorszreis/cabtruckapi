@@ -4,6 +4,8 @@ import com.example.cabtruckapi.api.dto.LinhaProducaoDTO;
 import com.example.cabtruckapi.api.exception.RegraNegocioException;
 import com.example.cabtruckapi.model.entity.LinhaProducao;
 import com.example.cabtruckapi.service.LinhaProducaoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/linhas-producao")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "Linhas de Producao", description = "Gerenciamento de linhas de producao e indicadores")
 public class LinhaProducaoController {
 
     private final LinhaProducaoService service;
@@ -77,6 +80,16 @@ public class LinhaProducaoController {
         }
         service.excluir(linha.get());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "Calcular indicador DPU da linha (RF12)")
+    @GetMapping("/{id}/dpu")
+    public ResponseEntity<?> calcularDPU(@PathVariable("id") Integer id) {
+        Optional<LinhaProducao> linha = service.getLinhaById(id);
+        if (linha.isEmpty()) {
+            return new ResponseEntity<>("Linha de producao nao encontrada", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(service.calcularDPU(linha.get()));
     }
 
     private LinhaProducao converter(LinhaProducaoDTO dto) {

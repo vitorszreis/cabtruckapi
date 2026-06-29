@@ -6,6 +6,7 @@ import com.example.cabtruckapi.model.repository.CabinaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +31,30 @@ public class CabinaService {
     @Transactional
     public Cabina salvar(Cabina cabina) {
         validar(cabina);
+        return repository.save(cabina);
+    }
+
+    // RF05 - Iniciar producao de cabina
+    @Transactional
+    public Cabina iniciarProducao(Cabina cabina) {
+        cabina.setStatus("EM_PRODUCAO");
+        cabina.setDataInicio(LocalDate.now());
+        validar(cabina);
+        return repository.save(cabina);
+    }
+
+    // RF11 - Finalizar cabina (somente sem falhas em aberto)
+    @Transactional
+    public Cabina finalizar(Cabina cabina) {
+        if (!"EM_PRODUCAO".equalsIgnoreCase(cabina.getStatus())) {
+            throw new RegraNegocioException("Cabina precisa estar EM_PRODUCAO para ser finalizada");
+        }
+        boolean temFalhaAberta = cabina.getFalhas() != null && cabina.getFalhas().stream()
+                .anyMatch(f -> "ABERTA".equalsIgnoreCase(f.getStatus()));
+        if (temFalhaAberta) {
+            throw new RegraNegocioException("Cabina possui falhas em aberto e nao pode ser finalizada");
+        }
+        cabina.setStatus("FINALIZADA");
         return repository.save(cabina);
     }
 
