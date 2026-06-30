@@ -1,0 +1,38 @@
+package com.example.cabtruckapi.model.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AcaoCorretiva {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String descricao;
+    private String eficacia;
+    private LocalDate dataExecucao;
+
+    @ManyToOne
+    private Falha falha;
+
+    public void registrar() {
+        if (this.descricao == null || this.descricao.trim().isEmpty()) {
+            throw new IllegalStateException("Descricao da acao corretiva e obrigatoria");
+        }
+        if (this.eficacia == null || this.eficacia.trim().isEmpty()) {
+            throw new IllegalStateException("Eficacia da acao corretiva e obrigatoria");
+        }
+        if (this.falha == null) {
+            throw new IllegalStateException("Acao corretiva deve estar vinculada a uma falha");
+        }
+    }
+}
