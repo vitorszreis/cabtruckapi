@@ -6,6 +6,7 @@ import com.example.cabtruckapi.model.repository.FalhaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,6 +32,38 @@ public class FalhaService {
     public Falha salvar(Falha falha) {
         validar(falha);
         return repository.save(falha);
+    }
+
+    // RF06 - Registrar falha (status ABERTA e data automaticos)
+    @Transactional
+    public Falha registrar(Falha falha) {
+        falha.setStatus("ABERTA");
+        falha.setDataRegistro(LocalDate.now());
+        validar(falha);
+        return repository.save(falha);
+    }
+
+    // RF08 - Resolver falha (precisa de ao menos uma acao corretiva)
+    @Transactional
+    public Falha resolver(Falha falha) {
+        if (!"ABERTA".equalsIgnoreCase(falha.getStatus())) {
+            throw new RegraNegocioException("Apenas falhas com status ABERTA podem ser resolvidas");
+        }
+        if (falha.getAcoesCorrativas() == null || falha.getAcoesCorrativas().isEmpty()) {
+            throw new RegraNegocioException("Falha precisa de ao menos uma acao corretiva para ser resolvida");
+        }
+        falha.setStatus("RESOLVIDA");
+        return repository.save(falha);
+    }
+
+    // RF09 - Consultar falhas por cabina
+    public List<Falha> getFalhasByCabina(Integer cabinaId) {
+        return repository.findByCabinaId(cabinaId);
+    }
+
+    // RF10 - Consultar falhas por estacao em um periodo, ordenadas por data
+    public List<Falha> getFalhasByEstacao(Integer estacaoId, LocalDate inicio, LocalDate fim) {
+        return repository.findByEstacaoIdAndDataRegistroBetweenOrderByDataRegistroAsc(estacaoId, inicio, fim);
     }
 
     @Transactional

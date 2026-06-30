@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -21,6 +22,7 @@ public class Falha {
     private String descricao;
     private String severidade;
     private String status;
+    private LocalDate dataRegistro;
 
     @ManyToOne
     private Cabina cabina;

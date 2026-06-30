@@ -52,11 +52,11 @@ public class CabinaController {
         return ResponseEntity.ok(toDTO(cabina.get()));
     }
 
-    @Operation(summary = "Criar nova cabina")
+    @Operation(summary = "Iniciar producao de cabina (RF05)")
     @PostMapping
     public ResponseEntity<?> post(@RequestBody CabinaDTO dto) {
         try {
-            return new ResponseEntity<>(toDTO(service.salvar(converter(dto))), HttpStatus.CREATED);
+            return new ResponseEntity<>(toDTO(service.iniciarProducao(converter(dto))), HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -86,6 +86,20 @@ public class CabinaController {
         }
         service.excluir(cabina.get());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "Finalizar producao de cabina (RF11)")
+    @PutMapping("/{id}/finalizar")
+    public ResponseEntity<?> finalizar(@PathVariable("id") Integer id) {
+        Optional<Cabina> cabina = service.getCabinaById(id);
+        if (cabina.isEmpty()) {
+            return new ResponseEntity<>("Cabina nao encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            return ResponseEntity.ok(toDTO(service.finalizar(cabina.get())));
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     private Cabina converter(CabinaDTO dto) {

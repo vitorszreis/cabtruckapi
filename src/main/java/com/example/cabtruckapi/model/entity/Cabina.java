@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -21,6 +22,7 @@ public class Cabina {
     private String numeroSerie;
     private String modelo;
     private String status;
+    private LocalDate dataInicio;
 
     @ManyToOne
     private LinhaProducao linhaProducao;
