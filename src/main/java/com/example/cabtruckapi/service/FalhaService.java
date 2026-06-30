@@ -34,7 +34,6 @@ public class FalhaService {
         return repository.save(falha);
     }
 
-    // RF06 - Registrar falha (status ABERTA e data automaticos)
     @Transactional
     public Falha registrar(Falha falha) {
         falha.setStatus("ABERTA");
@@ -43,7 +42,6 @@ public class FalhaService {
         return repository.save(falha);
     }
 
-    // RF08 - Resolver falha (precisa de ao menos uma acao corretiva)
     @Transactional
     public Falha resolver(Falha falha) {
         if (!"ABERTA".equalsIgnoreCase(falha.getStatus())) {
@@ -56,12 +54,10 @@ public class FalhaService {
         return repository.save(falha);
     }
 
-    // RF09 - Consultar falhas por cabina
     public List<Falha> getFalhasByCabina(Integer cabinaId) {
         return repository.findByCabinaId(cabinaId);
     }
 
-    // RF10 - Consultar falhas por estacao em um periodo, ordenadas por data
     public List<Falha> getFalhasByEstacao(Integer estacaoId, LocalDate inicio, LocalDate fim) {
         return repository.findByEstacaoIdAndDataRegistroBetweenOrderByDataRegistroAsc(estacaoId, inicio, fim);
     }

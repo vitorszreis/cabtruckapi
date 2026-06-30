@@ -34,7 +34,6 @@ public class CabinaService {
         return repository.save(cabina);
     }
 
-    // RF05 - Iniciar producao de cabina
     @Transactional
     public Cabina iniciarProducao(Cabina cabina) {
         cabina.setStatus("EM_PRODUCAO");
@@ -43,7 +42,6 @@ public class CabinaService {
         return repository.save(cabina);
     }
 
-    // RF11 - Finalizar cabina (somente sem falhas em aberto)
     @Transactional
     public Cabina finalizar(Cabina cabina) {
         if (!"EM_PRODUCAO".equalsIgnoreCase(cabina.getStatus())) {

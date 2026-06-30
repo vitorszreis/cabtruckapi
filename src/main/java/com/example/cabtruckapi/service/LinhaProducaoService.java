@@ -39,7 +39,6 @@ public class LinhaProducaoService {
         repository.delete(linhaProducao);
     }
 
-    // RF12 - Calcular indicador DPU (defeitos por unidade) da linha
     public double calcularDPU(LinhaProducao linhaProducao) {
         return linhaProducao.calcularDPU();
     }
