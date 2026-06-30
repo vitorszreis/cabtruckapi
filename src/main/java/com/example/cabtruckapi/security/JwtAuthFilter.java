@@ -29,8 +29,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String authorization = request.getHeader("Authorization");
 
-        if (authorization != null && authorization.startsWith("Bearer")) {
-            String token = authorization.split(" ")[1];
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            String[] parts = authorization.split(" ");
+            if (parts.length < 2 || parts[1].isBlank()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+            String token = parts[1];
             boolean isValid = jwtService.tokenValido(token);
 
             if (isValid) {

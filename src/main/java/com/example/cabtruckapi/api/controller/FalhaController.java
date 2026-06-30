@@ -105,6 +105,7 @@ public class FalhaController {
         }
     }
 
+    @Operation(summary = "Atualizar falha")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable("id") Integer id, @RequestBody FalhaDTO dto) {
         if (service.getFalhaById(id).isEmpty()) {
@@ -119,6 +120,7 @@ public class FalhaController {
         }
     }
 
+    @Operation(summary = "Excluir falha")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluir(@PathVariable("id") Integer id) {
         Optional<Falha> falha = service.getFalhaById(id);

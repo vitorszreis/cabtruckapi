@@ -33,12 +33,14 @@ public class LinhaProducaoController {
 
     private final LinhaProducaoService service;
 
+    @Operation(summary = "Listar todas as linhas de producao")
     @GetMapping
     public ResponseEntity<List<LinhaProducaoDTO>> get() {
         List<LinhaProducaoDTO> linhas = service.getLinhas().stream().map(this::toDTO).collect(Collectors.toList());
         return ResponseEntity.ok(linhas);
     }
 
+    @Operation(summary = "Buscar linha de producao por ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable("id") Integer id) {
         Optional<LinhaProducao> linha = service.getLinhaById(id);
@@ -48,6 +50,7 @@ public class LinhaProducaoController {
         return ResponseEntity.ok(toDTO(linha.get()));
     }
 
+    @Operation(summary = "Cadastrar linha de producao (RF01)")
     @PostMapping
     public ResponseEntity<?> post(@RequestBody LinhaProducaoDTO dto) {
         try {
@@ -58,6 +61,7 @@ public class LinhaProducaoController {
         }
     }
 
+    @Operation(summary = "Atualizar linha de producao")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable("id") Integer id, @RequestBody LinhaProducaoDTO dto) {
         if (service.getLinhaById(id).isEmpty()) {
@@ -72,6 +76,7 @@ public class LinhaProducaoController {
         }
     }
 
+    @Operation(summary = "Excluir linha de producao")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluir(@PathVariable("id") Integer id) {
         Optional<LinhaProducao> linha = service.getLinhaById(id);
