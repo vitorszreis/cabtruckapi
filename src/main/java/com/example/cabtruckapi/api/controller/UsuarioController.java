@@ -1,4 +1,4 @@
-package com.example.cabtruckapi.api.controller;
+﻿package com.example.cabtruckapi.api.controller;
 
 import com.example.cabtruckapi.api.dto.CredenciaisDTO;
 import com.example.cabtruckapi.api.dto.TokenDTO;
@@ -8,7 +8,6 @@ import com.example.cabtruckapi.api.exception.SenhaInvalidaException;
 import com.example.cabtruckapi.model.entity.Usuario;
 import com.example.cabtruckapi.security.JwtService;
 import com.example.cabtruckapi.service.UsuarioService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,39 +25,36 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/usuarios")
 @RequiredArgsConstructor
 @CrossOrigin
-@Tag(name = "Usuários", description = "Gerenciamento de usuários e autenticação")
+@Tag(name = "Usuarios", description = "Gerenciamento de usuarios e autenticacao")
 public class UsuarioController {
 
     private final UsuarioService service;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    @Operation(summary = "Listar todos os usuários")
     @GetMapping
     public ResponseEntity<List<UsuarioDTO>> get() {
         return ResponseEntity.ok(service.getUsuarios().stream().map(UsuarioDTO::create).collect(Collectors.toList()));
     }
 
-    @Operation(summary = "Buscar usuário por ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable Integer id) {
         Optional<Usuario> usuario = service.getUsuarioById(id);
         if (usuario.isEmpty()) {
-            return new ResponseEntity<>("Usuário não encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("UsuÃ¡rio nÃ£o encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(UsuarioDTO.create(usuario.get()));
     }
 
-    @Operation(summary = "Cadastrar novo usuário")
     @PostMapping
     public ResponseEntity<?> post(@RequestBody UsuarioDTO dto) {
         try {
             if (dto.getSenha() == null || dto.getSenha().isBlank() ||
                     dto.getSenhaRepeticao() == null || dto.getSenhaRepeticao().isBlank()) {
-                return ResponseEntity.badRequest().body("Senha inválida");
+                return ResponseEntity.badRequest().body("Senha invÃ¡lida");
             }
             if (!dto.getSenha().equals(dto.getSenhaRepeticao())) {
-                return ResponseEntity.badRequest().body("Senhas não conferem");
+                return ResponseEntity.badRequest().body("Senhas nÃ£o conferem");
             }
             Usuario usuario = Usuario.builder()
                     .login(dto.getLogin())
@@ -71,7 +67,6 @@ public class UsuarioController {
         }
     }
 
-    @Operation(summary = "Autenticar usuário e obter token JWT")
     @PostMapping("/auth")
     public TokenDTO autenticar(@RequestBody CredenciaisDTO credenciais) {
         try {
@@ -87,12 +82,11 @@ public class UsuarioController {
         }
     }
 
-    @Operation(summary = "Excluir usuário")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluir(@PathVariable Integer id) {
         Optional<Usuario> usuario = service.getUsuarioById(id);
         if (usuario.isEmpty()) {
-            return new ResponseEntity<>("Usuário não encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("UsuÃ¡rio nÃ£o encontrado", HttpStatus.NOT_FOUND);
         }
         service.excluir(usuario.get());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

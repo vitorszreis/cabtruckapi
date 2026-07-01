@@ -1,10 +1,9 @@
-package com.example.cabtruckapi.api.controller;
+﻿package com.example.cabtruckapi.api.controller;
 
 import com.example.cabtruckapi.api.dto.TipoFalhaDTO;
 import com.example.cabtruckapi.api.exception.RegraNegocioException;
 import com.example.cabtruckapi.model.entity.TipoFalha;
 import com.example.cabtruckapi.service.TipoFalhaService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -33,13 +32,11 @@ public class TipoFalhaController {
 
     private final TipoFalhaService service;
 
-    @Operation(summary = "Listar todos os tipos de falha")
     @GetMapping
     public ResponseEntity<List<TipoFalhaDTO>> get() {
         return ResponseEntity.ok(service.getTiposFalha().stream().map(this::toDTO).collect(Collectors.toList()));
     }
 
-    @Operation(summary = "Buscar tipo de falha por ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable("id") Integer id) {
         Optional<TipoFalha> tipoFalha = service.getTipoFalhaById(id);
@@ -49,7 +46,6 @@ public class TipoFalhaController {
         return ResponseEntity.ok(toDTO(tipoFalha.get()));
     }
 
-    @Operation(summary = "Cadastrar novo tipo de falha")
     @PostMapping
     public ResponseEntity<?> post(@RequestBody TipoFalhaDTO dto) {
         try {
@@ -59,7 +55,6 @@ public class TipoFalhaController {
         }
     }
 
-    @Operation(summary = "Editar tipo de falha (RF17)")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable("id") Integer id, @RequestBody TipoFalhaDTO dto) {
         if (service.getTipoFalhaById(id).isEmpty()) {
@@ -74,7 +69,6 @@ public class TipoFalhaController {
         }
     }
 
-    @Operation(summary = "Excluir tipo de falha")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluir(@PathVariable("id") Integer id) {
         Optional<TipoFalha> tipoFalha = service.getTipoFalhaById(id);

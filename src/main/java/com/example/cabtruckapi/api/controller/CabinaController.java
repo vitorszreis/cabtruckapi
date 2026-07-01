@@ -1,4 +1,4 @@
-package com.example.cabtruckapi.api.controller;
+﻿package com.example.cabtruckapi.api.controller;
 
 import com.example.cabtruckapi.api.dto.CabinaDTO;
 import com.example.cabtruckapi.api.exception.RegraNegocioException;
@@ -6,7 +6,6 @@ import com.example.cabtruckapi.model.entity.Cabina;
 import com.example.cabtruckapi.model.entity.LinhaProducao;
 import com.example.cabtruckapi.service.CabinaService;
 import com.example.cabtruckapi.service.LinhaProducaoService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,19 +29,17 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/cabinas")
 @RequiredArgsConstructor
 @CrossOrigin
-@Tag(name = "Cabinas", description = "Gerenciamento de cabinas de caminhão")
+@Tag(name = "Cabinas", description = "Gerenciamento de cabinas de caminhao")
 public class CabinaController {
 
     private final CabinaService service;
     private final LinhaProducaoService linhaProducaoService;
 
-    @Operation(summary = "Listar todas as cabinas")
     @GetMapping
     public ResponseEntity<List<CabinaDTO>> get() {
         return ResponseEntity.ok(service.getCabinas().stream().map(this::toDTO).collect(Collectors.toList()));
     }
 
-    @Operation(summary = "Buscar cabina por ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable("id") Integer id) {
         Optional<Cabina> cabina = service.getCabinaById(id);
@@ -52,7 +49,6 @@ public class CabinaController {
         return ResponseEntity.ok(toDTO(cabina.get()));
     }
 
-    @Operation(summary = "Iniciar producao de cabina (RF05)")
     @PostMapping
     public ResponseEntity<?> post(@RequestBody CabinaDTO dto) {
         try {
@@ -62,7 +58,6 @@ public class CabinaController {
         }
     }
 
-    @Operation(summary = "Atualizar cabina")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable("id") Integer id, @RequestBody CabinaDTO dto) {
         if (service.getCabinaById(id).isEmpty()) {
@@ -77,7 +72,6 @@ public class CabinaController {
         }
     }
 
-    @Operation(summary = "Excluir cabina")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluir(@PathVariable("id") Integer id) {
         Optional<Cabina> cabina = service.getCabinaById(id);
@@ -88,7 +82,6 @@ public class CabinaController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Finalizar producao de cabina (RF11)")
     @PutMapping("/{id}/finalizar")
     public ResponseEntity<?> finalizar(@PathVariable("id") Integer id) {
         Optional<Cabina> cabina = service.getCabinaById(id);

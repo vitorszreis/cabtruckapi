@@ -1,10 +1,9 @@
-package com.example.cabtruckapi.api.controller;
+﻿package com.example.cabtruckapi.api.controller;
 
 import com.example.cabtruckapi.api.dto.InspetorDTO;
 import com.example.cabtruckapi.api.exception.RegraNegocioException;
 import com.example.cabtruckapi.model.entity.Inspetor;
 import com.example.cabtruckapi.service.InspetorService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -33,13 +32,11 @@ public class InspetorController {
 
     private final InspetorService service;
 
-    @Operation(summary = "Listar todos os inspetores")
     @GetMapping
     public ResponseEntity<List<InspetorDTO>> get() {
         return ResponseEntity.ok(service.getInspetores().stream().map(this::toDTO).collect(Collectors.toList()));
     }
 
-    @Operation(summary = "Buscar inspetor por ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable("id") Integer id) {
         Optional<Inspetor> inspetor = service.getInspetorById(id);
@@ -49,7 +46,6 @@ public class InspetorController {
         return ResponseEntity.ok(toDTO(inspetor.get()));
     }
 
-    @Operation(summary = "Cadastrar novo inspetor")
     @PostMapping
     public ResponseEntity<?> post(@RequestBody InspetorDTO dto) {
         try {
@@ -59,7 +55,6 @@ public class InspetorController {
         }
     }
 
-    @Operation(summary = "Atualizar inspetor")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable("id") Integer id, @RequestBody InspetorDTO dto) {
         if (service.getInspetorById(id).isEmpty()) {
@@ -74,7 +69,6 @@ public class InspetorController {
         }
     }
 
-    @Operation(summary = "Excluir inspetor")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluir(@PathVariable("id") Integer id) {
         Optional<Inspetor> inspetor = service.getInspetorById(id);
