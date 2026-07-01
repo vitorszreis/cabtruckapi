@@ -1,4 +1,4 @@
-package com.example.cabtruckapi.api.controller;
+﻿package com.example.cabtruckapi.api.controller;
 
 import com.example.cabtruckapi.api.dto.FalhaDTO;
 import com.example.cabtruckapi.api.exception.RegraNegocioException;
@@ -12,7 +12,6 @@ import com.example.cabtruckapi.service.EstacaoService;
 import com.example.cabtruckapi.service.FalhaService;
 import com.example.cabtruckapi.service.InspetorService;
 import com.example.cabtruckapi.service.TipoFalhaService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -48,13 +47,11 @@ public class FalhaController {
     private final TipoFalhaService tipoFalhaService;
     private final InspetorService inspetorService;
 
-    @Operation(summary = "Listar todas as falhas")
     @GetMapping
     public ResponseEntity<List<FalhaDTO>> get() {
         return ResponseEntity.ok(service.getFalhas().stream().map(this::toDTO).collect(Collectors.toList()));
     }
 
-    @Operation(summary = "Buscar falha por ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable("id") Integer id) {
         Optional<Falha> falha = service.getFalhaById(id);
@@ -64,14 +61,12 @@ public class FalhaController {
         return ResponseEntity.ok(toDTO(falha.get()));
     }
 
-    @Operation(summary = "Consultar falhas por cabina (RF09)")
     @GetMapping("/cabina/{cabinaId}")
     public ResponseEntity<List<FalhaDTO>> getPorCabina(@PathVariable("cabinaId") Integer cabinaId) {
         return ResponseEntity.ok(
                 service.getFalhasByCabina(cabinaId).stream().map(this::toDTO).collect(Collectors.toList()));
     }
 
-    @Operation(summary = "Consultar falhas por estacao em um periodo (RF10)")
     @GetMapping("/estacao/{estacaoId}")
     public ResponseEntity<List<FalhaDTO>> getPorEstacao(
             @PathVariable("estacaoId") Integer estacaoId,
@@ -81,7 +76,6 @@ public class FalhaController {
                 service.getFalhasByEstacao(estacaoId, inicio, fim).stream().map(this::toDTO).collect(Collectors.toList()));
     }
 
-    @Operation(summary = "Registrar falha em cabina (RF06)")
     @PostMapping
     public ResponseEntity<?> post(@RequestBody FalhaDTO dto) {
         try {
@@ -91,7 +85,6 @@ public class FalhaController {
         }
     }
 
-    @Operation(summary = "Resolver falha (RF08)")
     @PutMapping("/{id}/resolver")
     public ResponseEntity<?> resolver(@PathVariable("id") Integer id) {
         Optional<Falha> falha = service.getFalhaById(id);
@@ -105,7 +98,6 @@ public class FalhaController {
         }
     }
 
-    @Operation(summary = "Atualizar falha")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable("id") Integer id, @RequestBody FalhaDTO dto) {
         if (service.getFalhaById(id).isEmpty()) {
@@ -120,7 +112,6 @@ public class FalhaController {
         }
     }
 
-    @Operation(summary = "Excluir falha")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluir(@PathVariable("id") Integer id) {
         Optional<Falha> falha = service.getFalhaById(id);

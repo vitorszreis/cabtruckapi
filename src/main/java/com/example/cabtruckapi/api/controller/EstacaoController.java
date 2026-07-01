@@ -1,4 +1,4 @@
-package com.example.cabtruckapi.api.controller;
+﻿package com.example.cabtruckapi.api.controller;
 
 import com.example.cabtruckapi.api.dto.EstacaoDTO;
 import com.example.cabtruckapi.api.exception.RegraNegocioException;
@@ -6,7 +6,6 @@ import com.example.cabtruckapi.model.entity.Estacao;
 import com.example.cabtruckapi.model.entity.LinhaProducao;
 import com.example.cabtruckapi.service.EstacaoService;
 import com.example.cabtruckapi.service.LinhaProducaoService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,19 +29,17 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/estacoes")
 @RequiredArgsConstructor
 @CrossOrigin
-@Tag(name = "Estações", description = "Gerenciamento de estações de trabalho")
+@Tag(name = "Estacoes", description = "Gerenciamento de estacoes de trabalho")
 public class EstacaoController {
 
     private final EstacaoService service;
     private final LinhaProducaoService linhaProducaoService;
 
-    @Operation(summary = "Listar todas as estações")
     @GetMapping
     public ResponseEntity<List<EstacaoDTO>> get() {
         return ResponseEntity.ok(service.getEstacoes().stream().map(this::toDTO).collect(Collectors.toList()));
     }
 
-    @Operation(summary = "Buscar estação por ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable("id") Integer id) {
         Optional<Estacao> estacao = service.getEstacaoById(id);
@@ -52,7 +49,6 @@ public class EstacaoController {
         return ResponseEntity.ok(toDTO(estacao.get()));
     }
 
-    @Operation(summary = "Criar nova estação")
     @PostMapping
     public ResponseEntity<?> post(@RequestBody EstacaoDTO dto) {
         try {
@@ -62,7 +58,6 @@ public class EstacaoController {
         }
     }
 
-    @Operation(summary = "Atualizar estação")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable("id") Integer id, @RequestBody EstacaoDTO dto) {
         if (service.getEstacaoById(id).isEmpty()) {
@@ -77,7 +72,6 @@ public class EstacaoController {
         }
     }
 
-    @Operation(summary = "Excluir estação")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluir(@PathVariable("id") Integer id) {
         Optional<Estacao> estacao = service.getEstacaoById(id);
